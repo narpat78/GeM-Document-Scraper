@@ -10,7 +10,7 @@ import time
 def select_category(driver, category):
     '''selecting the category from different categories available'''
     element = Select(driver.find_element(By.ID, 'buyer_category'))
-    element.select_by_visible(category)
+    element.select_by_visible_text(category)
     print(f'Selected Category: {category}')
 
 def select_date_range(driver, from_date, to_date):
@@ -91,3 +91,16 @@ def enter_captcha(driver, captcha_code, img_id):
         except Exception as e:
             print("⚠️ Error entering the Captcha: {e}")
             break 
+
+def enter_captcha_and_download(driver, captcha_code):
+    '''entering and submitting the captcha for downloading the dcoument'''
+    h_captcha_value = driver.find_element(By.ID, "h_captcha").get_attribute("value")
+    cap_input = driver.find_element(By.ID, captcha_code)
+    # cap_input.clear()
+    cap_input.send_keys(h_captcha_value)
+    search_button = driver.find_element(By.ID, "modelsbt")
+    search_button.click()
+    time.sleep(1)
+    download_button = driver.find_element(By.ID, "dwnbtn")
+    print("✅ Captcha accepted! Proceeding to download Contracts.")
+    download_button.click()
