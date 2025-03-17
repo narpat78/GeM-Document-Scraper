@@ -5,6 +5,7 @@ import re
 from PIL import Image
 import pytesseract
 import time
+import os
 
 
 def select_category(driver, category):
@@ -30,6 +31,8 @@ def select_date_range(driver, from_date, to_date):
 
 def extract_captcha(driver, img_id):
     '''extracting and saving the captcha image from base64 data'''
+    captcha_folder = "captcha"
+    os.makedirs(captcha_folder, exist_ok=True)
     try:
         captcha_img = driver.find_element(By.ID, img_id)
         img_src = captcha_img.get_attribute("src")
@@ -37,7 +40,9 @@ def extract_captcha(driver, img_id):
         if match:
             base64_string = match.group(1)
             image_data = base64.b64decode(base64_string)
-            with open("captcha/captcha.jpg", "wb") as img_file:
+            captcha_path = os.path.join(captcha_folder, "captcha.jpg")
+            # "captcha/captcha.jpg"
+            with open(captcha_path, "wb") as img_file:
                 img_file.write(image_data)
         else:
             print("⚠️ Failed to read Captcha! Refreshing and Retrying.")
